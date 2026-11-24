@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La Châtaigne — Carte</title>
+<meta name="description" content="La carte du restaurant corse La Châtaigne : planches à partager, entrées, plats et desserts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Italianno&family=Noto+Serif+SC:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --noyer:#231E18;
+    --ivoire:#F7F2E6;
+    --encre:#1C1815;
+    --or:#A98F62;
+    --or-clair:#C9B48A;
+    --sepia:#6B5C46;
+    --brique:#7A3226;
+
+    --serif:"EB Garamond",Garamond,Georgia,serif;
+    --script:"Italianno",cursive;
+  }
+
+  /* Chinois : police adaptée, pas d'italique (rendu peu lisible en caractères chinois) */
+  html[lang="zh-Hans"]{
+    --serif:"EB Garamond","Noto Serif SC","Songti SC","SimSun",serif;
+  }
+  html[lang="zh-Hans"] .plat__desc,
+  html[lang="zh-Hans"] .page__sous{font-style:normal;}
+  html[lang="zh-Hans"] .page__titre{letter-spacing:.2em;}
+  html[lang="zh-Hans"] .barre__liens a{letter-spacing:.14em;font-size:.8rem;}
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--noyer);
+    color:var(--encre);
+    font-family:var(--serif);
+    -webkit-font-smoothing:antialiased;
+  }
+  :focus-visible{outline:2px solid var(--or-clair);outline-offset:3px;}
+
+  /* ---------- Barre supérieure ---------- */
+  .barre{
+    position:sticky;top:0;z-index:40;
+    background:rgba(35,30,24,.94);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid rgba(201,180,138,.2);
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:12px;
+    padding:12px 18px;
+  }
+  .barre__liens{
+    grid-column:2;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:8px clamp(16px,4vw,40px);
+  }
+  .barre__liens a{
+    font-size:.72rem;
+    letter-spacing:.26em;
+    text-transform:uppercase;
+    text-decoration:none;
+    white-space:nowrap;
+    color:rgba(247,242,230,.6);
+    padding-bottom:3px;
+    border-bottom:1px solid transparent;
+    transition:color .3s,border-color .3s;
+  }
+  .barre__liens a:hover{color:var(--ivoire);}
+  .barre__liens a.est-actif{color:var(--or-clair);border-bottom-color:var(--or-clair);}
+
+  /* ---------- Sélecteur de langue ---------- */
+  .langue{grid-column:3;justify-self:end;position:relative;}
+  .langue__bouton{
+    display:inline-flex;align-items:center;gap:8px;
+    background:transparent;
+    border:1px solid rgba(201,180,138,.45);
+    color:var(--or-clair);
+    font-family:var(--serif);
+    font-size:.74rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    padding:7px 13px;
+    border-radius:2px;
+    cursor:pointer;
+    transition:background-color .3s,color .3s;
+  }
+  .langue__bouton:hover{background:rgba(201,180,138,.14);}
+  .langue__bouton svg{width:11px;height:11px;stroke:currentColor;stroke-width:2;fill:none;transition:transform .3s;}
+  .langue__bouton[aria-expanded="true"] svg{transform:rotate(180deg);}
+  .langue__menu{
+    position:absolute;right:0;top:calc(100% + 8px);
+    min-width:172px;
+    margin:0;padding:6px;
+    list-style:none;
+    background:#2E271F;
+    border:1px solid rgba(201,180,138,.3);
+    box-shadow:0 14px 34px rgba(0,0,0,.45);
+    display:none;
+  }
+  .langue__menu.est-ouvert{display:block;}
+  .langue__menu button{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+    width:100%;
+    background:none;border:none;
+    color:rgba(247,242,230,.78);
+    font-family:"EB Garamond","Noto Serif SC","Songti SC",Georgia,serif;
+    font-size:.95rem;
+    text-align:left;
+    padding:9px 12px;
+    cursor:pointer;
+    transition:background-color .25s,color .25s;
+  }
+  .langue__menu button:hover{background:rgba(201,180,138,.14);color:var(--ivoire);}
+  .langue__menu button[aria-current="true"]{color:var(--or-clair);}
+  .langue__menu .code{font-size:.68rem;letter-spacing:.18em;opacity:.65;}
+
+  /* ---------- Ouverture ---------- */
+  .ouverture{
+    text-align:center;
+    color:var(--ivoire);
+    padding:clamp(70px,13vh,130px) 24px clamp(50px,8vh,80px);
+  }
+  .ouverture__mark{width:74px;height:auto;margin-bottom:2px;}
+  .ouverture__mark path{stroke:var(--or-clair);stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+  .ouverture__nom{
+    font-family:var(--script);
+    font-size:clamp(4.4rem,15vw,8.5rem);
+    line-height:.85;
+    font-weight:400;
+    margin:0 0 22px;
+  }
+  .ouverture__note{
+    font-size:.76rem;
+    letter-spacing:.4em;
+    text-transform:uppercase;
+    color:rgba(247,242,230,.55);
+    margin:0;
+  }
+
+  /* ---------- Pages de carte ---------- */
+  .carte{padding:0 clamp(14px,4vw,32px) 20px;}
+  .page{
+    position:relative;
+    max-width:790px;
+    margin:0 auto clamp(34px,6vw,60px);
+    background:var(--ivoire);
+    padding:clamp(52px,8vw,86px) clamp(26px,7vw,78px) clamp(58px,8vw,86px);
+    box-shadow:0 20px 50px rgba(0,0,0,.35);
+  }
+  .page::before,.page::after{
+    content:"";position:absolute;pointer-events:none;
+  }
+  .page::before{inset:14px;border:1px solid rgba(169,143,98,.55);}
+  .page::after{inset:20px;border:1px solid rgba(169,143,98,.28);}
+
+  .coin{position:absolute;width:clamp(64px,12vw,104px);height:auto;opacity:.75;}
+  .coin--hg{top:22px;left:22px;}
+  .coin--hd{top:22px;right:22px;transform:scaleX(-1);}
+  .coin--bg{bottom:22px;left:22px;transform:scaleY(-1);}
+  .coin--bd{bottom:22px;right:22px;transform:scale(-1,-1);}
+
+  .page__enseigne{
+    font-family:var(--script);
+    font-size:clamp(2.6rem,7vw,3.6rem);
+    line-height:.9;
+    text-align:center;
+    margin:0 0 6px;
+    color:var(--encre);
+  }
+  .page__titre{
+    text-align:center;
+    font-weight:500;
+    font-size:clamp(1.4rem,4.4vw,1.9rem);
+    letter-spacing:.34em;
+    text-transform:uppercase;
+    margin:0 0 10px;
+  }
+  .page__sous{
+    text-align:center;
+    font-style:italic;
+    font-size:clamp(1rem,2.9vw,1.14rem);
+    color:var(--sepia);
+    margin:0;
+  }
+  .page__filet{
+    width:120px;height:1px;
+    background:rgba(169,143,98,.6);
+    margin:26px auto 40px;
+    position:relative;
+  }
+  .page__filet::after{
+    content:"";position:absolute;left:50%;top:50%;
+    width:5px;height:5px;
+    background:var(--or);
+    transform:translate(-50%,-50%) rotate(45deg);
+  }
+
+  /* Intitulé de rubrique (« Les Planches », « Nos Incontournables ») */
+  .rubrique{
+    text-align:center;
+    font-weight:500;
+    font-size:clamp(1.25rem,3.8vw,1.5rem);
+    letter-spacing:.03em;
+    color:var(--brique);
+    margin:0 0 26px;
+  }
+
+  .plat{text-align:center;padding:4px 0;}
+  .plat__nom{
+    font-weight:600;
+    font-size:clamp(1.08rem,3.2vw,1.32rem);
+    margin:0;
+    line-height:1.32;
+  }
+  .plat__desc{
+    font-style:italic;
+    font-size:clamp(.95rem,2.7vw,1.06rem);
+    line-height:1.55;
+    color:var(--sepia);
+    margin:7px auto 0;
+    max-width:46ch;
+  }
+  .plat__suggestion{
+    font-size:clamp(.92rem,2.6vw,1rem);
+    line-height:1.5;
+    color:var(--brique);
+    margin:6px auto 0;
+    max-width:46ch;
+  }
+  .plat__prix{
+    display:inline-block;
+    margin-top:12px;
+    font-size:.9rem;
+    letter-spacing:.16em;
+    color:var(--or);
+  }
+  /* Plat mis en avant dans l'encadré */
+  .plat--vedette .plat__nom{color:var(--brique);}
+
+  .fleuron{
+    display:flex;align-items:center;justify-content:center;
+    gap:10px;
+    margin:30px auto;
+    max-width:330px;
+  }
+  .fleuron span{flex:1;height:1px;background:rgba(169,143,98,.4);}
+  .fleuron i{
+    width:6px;height:6px;
+    background:var(--or);
+    transform:rotate(45deg);
+    display:block;
+  }
+
+  /* ---------- Encadré (suggestions mises en avant) ---------- */
+  .encadre{
+    position:relative;
+    max-width:540px;
+    margin:44px auto 0;
+    padding:38px clamp(16px,5vw,40px) 32px;
+    border:1px solid rgba(169,143,98,.65);
+  }
+  .encadre::before{
+    content:"";position:absolute;left:50%;top:0;
+    width:9px;height:9px;
+    background:var(--or);
+    box-shadow:0 0 0 6px var(--ivoire);
+    transform:translate(-50%,-50%) rotate(45deg);
+  }
+  .encadre .fleuron{margin:22px auto;max-width:200px;}
+
+  /* ---------- Pied de page ---------- */
+  .pied{
+    text-align:center;
+    color:var(--ivoire);
+    padding:clamp(60px,9vh,96px) 24px clamp(64px,9vh,90px);
+  }
+  .pied__nom{
+    font-family:var(--script);
+    font-size:clamp(2.8rem,9vw,4.2rem);
+    line-height:.9;
+    margin:0 0 8px;
+  }
+  .pied__note{
+    font-size:.74rem;letter-spacing:.3em;text-transform:uppercase;
+    color:rgba(247,242,230,.5);
+    margin:0 0 38px;
+  }
+  .cta{
+    display:inline-flex;align-items:center;gap:12px;
+    font-size:.8rem;letter-spacing:.22em;text-transform:uppercase;
+    text-decoration:none;
+    color:var(--or-clair);
+    border:1px solid var(--or-clair);
+    padding:16px 32px;
+    transition:background-color .35s,color .35s;
+  }
+  .cta:hover{background:var(--or-clair);color:var(--noyer);}
+  .cta svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.8;fill:none;}
+  .pied__infos{
+    margin:36px 0 0;
+    font-size:.95rem;
+    line-height:1.9;
+    color:rgba(247,242,230,.42);
+  }
+
+  /* 4 liens dans la barre : on passe sur deux lignes plus tôt */
+  @media (max-width:760px){
+    .barre{grid-template-columns:1fr auto;row-gap:10px;}
+    .barre__liens{grid-column:1 / -1;grid-row:2;gap:6px 18px;}
+    .barre__liens a{letter-spacing:.16em;font-size:.7rem;}
+    .langue{grid-column:2;grid-row:1;}
+  }
+
+  @media (max-width:620px){
+    .coin{width:52px;}
+    .coin--hg,.coin--hd{top:18px;}
+    .coin--bg,.coin--bd{bottom:18px;}
+    .coin--hg,.coin--bg{left:18px;}
+    .coin--hd,.coin--bd{right:18px;}
+  }
+
+  @media print{
+    .barre,.ouverture,.cta{display:none;}
+    body{background:#fff;}
+    .page{box-shadow:none;margin-bottom:0;page-break-after:always;}
+    .pied{color:#000;}
+    .pied__infos,.pied__note{color:#444;}
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" aria-hidden="true" style="position:absolute">
+  <symbol id="branche" viewBox="0 0 120 120">
+    <path d="M10 10C34 28 60 50 82 84" fill="none" stroke="#A98F62" stroke-width="1.6" stroke-linecap="round"/>
+    <g fill="#A98F62" opacity=".62">
+      <g transform="translate(22,20) rotate(-46)"><path d="M0 0C9 -8 22 -7 29 1C21 9 8 9 0 0Z"/></g>
+      <g transform="translate(26,24) rotate(38)"><path d="M0 0C8 -7 20 -6 26 1C19 8 7 8 0 0Z"/></g>
+      <g transform="translate(40,36) rotate(-42)"><path d="M0 0C9 -8 22 -7 29 1C21 9 8 9 0 0Z"/></g>
+      <g transform="translate(44,41) rotate(42)"><path d="M0 0C8 -7 20 -6 26 1C19 8 7 8 0 0Z"/></g>
+      <g transform="translate(57,54) rotate(-38)"><path d="M0 0C9 -8 22 -7 29 1C21 9 8 9 0 0Z"/></g>
+      <g transform="translate(62,60) rotate(46)"><path d="M0 0C8 -7 20 -6 26 1C19 8 7 8 0 0Z"/></g>
+      <g transform="translate(72,74) rotate(-34)"><path d="M0 0C8 -7 20 -6 26 1C19 8 7 8 0 0Z"/></g>
+    </g>
+  </symbol>
+</svg>
+
+<div class="barre">
+  <nav class="barre__liens" aria-label="Sections de la carte">
+    <a href="#partager" data-t="navA">À partager</a>
+    <a href="#entrees" data-t="navE">Entrées</a>
+    <a href="#plats" data-t="navP">Plats</a>
+    <a href="#desserts" data-t="navD">Desserts</a>
+  </nav>
+
+  <div class="langue">
+    <button class="langue__bouton" id="langueBouton" aria-expanded="false" aria-haspopup="true" aria-label="Choisir la langue">
+      <span id="langueCode">FR</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <ul class="langue__menu" id="langueMenu">
+      <li><button type="button" data-lang="fr" aria-current="true">Français <span class="code">FR</span></button></li>
+      <li><button type="button" data-lang="en">English <span class="code">EN</span></button></li>
+      <li><button type="button" data-lang="it">Italiano <span class="code">IT</span></button></li>
+      <li><button type="button" data-lang="de">Deutsch <span class="code">DE</span></button></li>
+      <li><button type="button" data-lang="es">Español <span class="code">ES</span></button></li>
+      <li><button type="button" data-lang="co">Corsu <span class="code">CO</span></button></li>
+      <li><button type="button" data-lang="zh">中文 <span class="code">ZH</span></button></li>
+    </ul>
+  </div>
+</div>
+
+<header class="ouverture">
+  <svg class="ouverture__mark" viewBox="0 0 76 68" aria-hidden="true">
+    <path d="M38 62C22 62 13 51 13 39C13 27 24 19 38 19C52 19 63 27 63 39C63 51 54 62 38 62Z"/>
+    <path d="M38 19C37 13 35 9 32 6"/>
+    <path d="M40 16C48 5 62 3 70 7C64 16 51 21 41 17Z"/>
+  </svg>
+  <h1 class="ouverture__nom">La Châtaigne</h1>
+  <p class="ouverture__note" data-t="enseigneNote">Restaurant corse</p>
+</header>
+
+<main class="carte">
+
+  <!-- ================= À PARTAGER ================= -->
+  <section class="page" id="partager">
+    <svg class="coin coin--hg" aria-hidden="true"><use href="#branche"/></svg>
+    <svg class="coin coin--hd" aria-hidden="true"><use href="#branche"/></svg>
+    <svg class="coin coin--bg" aria-hidden="true"><use href="#branche"/></svg>
+    <svg class="coin coin--bd" aria-hidden="true"><use href="#branche"/></svg>
+
+    <p class="page__enseigne">La Châtaigne</p>
+    <h2 class="page__titre" data-t="titreA">À partager</h2>
+    <p class="page__sous" data-t="sousA">Les racines et les inspirations du moment</p>
+    <div class="page__filet"></div>
+
+    <h3 class="rubrique" data-t="rubPlanches">Les Planches</h3>
+
+    <article class="plat">
+      <h4 class="plat__nom" data-t="a1n">Planche de charcuterie corse</h4>
+      <p class="plat__desc" data-t="a1d">Jambon, coppa, lonzo et saucisson</p>
+      <span class="plat__prix">25 €</span>
+    </article>
+    <div class="fleuron" aria-hidden="true"><span></span><i></i><span></span></div>
+
+    <article class="plat">
+      <h4 class="plat__nom" data-t="a2n">Planche mixte « U Spuntinu »</h4>
+      <p class="plat__desc" data-t="a2d">Assortiment de charcuterie et fromages corses</p>
+      <span class="plat__prix">25 €</span>
+    </article>
+  </section>
+
+  <!-- ================= ENTRÉES ================= -->
+  <section class="page" id="entrees">
+    <svg class="coin coin--hg" aria-hidden="true"><use href="#branche"/></svg>
+    <svg class="coin coin--hd" aria-hidden="true"><use href="#branche"/></svg>
+    <svg class="coin coin--bg" aria-hidden="true"><use href="#branche"/></svg>
+    <svg class="coin coin--bd" aria-hidden="true"><use href="#branche"/></svg>
+
+    <p class="page__enseigne">La Châtaigne</p>
+    <h2 class="page__titre" data-t="titreE">Entrées</h2>
+    <p class="page__sous" data-t="sousE">Les racines et les inspirations du moment</p>
+    <div class="page__filet"></div>
+
+    <h3 class="rubrique" data-t="rubIncont">Nos Incontournables</h3>
+
+    <article class="plat">
+      <h4 class="plat__nom" data-t="e1n">Planche de charcuterie corse</h4>
+      <p class="plat__desc" data-t="e1d">Jambon, coppa, lonzo et saucisson</p>
+      <span class="plat__prix">14 €</span>
+    </article>
+    <div class="fleuron" aria-hidden="true"><span></span><i></i><span></span></div>
+
+    <article class="plat">
+      <h4 class="plat__nom" data-t="e2n">Cappuccino de châtaigne</h4>
+      <p class="plat__desc" data-t="e2d">Espuma de crème et pointe de persil</p>
+      <span class="plat__prix">13 €</span>
+    </article>
+    <div class="fleuron" aria-hidden="true"><span></span><i></i><span></span></div>
+
+    <article class="plat">
+      <h4 class="plat__nom" data-t="e3n">Terrine de sanglier</h4>
+      <p class="plat__desc" data-t="e3d">Pesto aux herbes du maquis et confiture de myrte</p>
+      <span class="plat__prix">13 €</span>
+    </article>
+    <div class="fleuron" aria-hidden="true"><span></span><i></i><span></span></div>
+
+    <article class="plat">
+      <h4 class="plat__nom" data-t="e4n">Foie gras mi-cuit à la châtaigne fait maison</h4>
+      <p class="plat__desc" data-t="e4d">Confiture de figues et pain des maures aux fruits secs</p>
+      <span class="plat__prix">31 €</span>
+    </article>
+
+    <div class="encadre">
+      <article class="plat plat--vedette">
+        <h4 class="plat__nom" data-t="e5n">Omelette au bruccio et à la menthe</h4>
+        <span class="plat__prix">14 €</span>
+      </article>
+      <div class="fleuron" aria-hidden="true"><span></span><i></i><span></span></div>
+
+      <article class="plat">
+        <h4 class="plat__nom" data-t="e6n">Sardines en aïoli</h4>
+        <p class="plat__desc" data-t="e6d">Tartine de pain grillé</p>
+        <span class="plat__prix">13 €</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- ================= PLATS ================= -->
+  <section class="page" id="plats">
+    <svg class="coin coin--hg" aria-hidden="true"><use href="#branche"/></svg>
+    <svg class="coin coin--hd" aria-hidden="true"><use href="#branche"/></svg>
+    <svg class="coin coin--bg" aria-hidden="true"><use href="#branche"/></svg>
+    <svg class="coin coin--bd" aria-hidden="true"><use href="#branche"/></svg>
+
+    <p class="page__enseigne">La Châtaigne</p>
+    <h2 class="page__titre" data-t="titreP">Plats</h2>
+    <p class="page__sous" data-t="sousP">Les incontournables de la maison</p>
+    <div class="page__filet"></div>
+
+    <h3 class="rubrique" data-t="rubIncont">Nos Incontournables</h3>
+
+    <article class="plat">
+      <h4 class="plat__nom" data-t="p1n">Aubergines à la Bonifacienne</h4>
+      <p class="plat__desc" data-t="p1d">Fondantes, gratinées et parfumées aux herbes</p>
+      <span class="plat__prix">24 €</span>
+    </article>
+    <div class="fleuron" aria-hidden="true"><span></span><i></i><span></span></div>
+
+    <article class="plat">
+      <h4 class="plat__nom" data-t="p2n">Cannelloni du berger</h4>
+      <p class="plat__desc" data-t="p2d">Farcis à la brousse et à la menthe fraîche</p>
+      <span class="plat__prix">24 €</span>
+    </article>
+    <div class="fleuron" aria-hidden="true"><span></span><i></i><span></span></div>
+
+    <article class="plat">
+      <h4 class="plat__nom" data-t="p3n">Stufatu de sanglier</h4>
+      <p class="plat__desc" data-t="p3d">Polenta moelleuse et pancetta grillée</p>
+      <span class="plat__prix">28 €</span>
+    </article>
+    <div class="fleuron" aria-hidden="true"><span></span><i></i><span></span></div>
+
+    <article class="plat">
+      <h4 class="plat__nom" data-t="p4n">Côte de veau au miel</h4>
+      <p class="plat__desc" data-t="p4d">Une recette emblématique, servie avec sa polenta moelleuse</p>
+      <span class="plat__prix">33 €</span>
+    </article>
+
+    <div class="encadre">
+      <article class="plat plat--vedette">
+        <h4 class="plat__nom" data-t="p5n">Tagliatelles aux champignons</h4>
+        <p class="plat__desc" data-t="p5d">Crème de tomme corse et chips de coppa</p>
+        <span class="plat__prix">26 €</span>
+      </article>
+      <div class="fleuron" aria-hidden="true"><span></span><i></i><span></span></div>
+
+      <article class="plat">
+        <h4 class="plat__nom" data-t="p6n">Filet de bar rôti</h4>
+        <p class="plat__desc" data-t="p6d">Douceur de carotte à la châtaigne</p>
+        <span class="plat__prix">28 €</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- ================= DESSERTS ================= -->
+  <section class="page" id="desserts">
+    <svg class="coin coin--hg" aria-hidden="true"><use href="#branche"/></svg>
+    <svg class="coin coin--hd" aria-hidden="true"><use href="#branche"/></svg>
+    <svg class="coin coin--bg" aria-hidden="true"><use href="#branche"/></svg>
+    <svg class="coin coin--bd" aria-hidden="true"><use href="#branche"/></svg>
+
+    <p class="page__enseigne">La Châtaigne</p>
+    <h2 class="page__titre" data-t="titreD">Desserts</h2>
+    <p class="page__sous" data-t="sousD">La douceur corse pour terminer</p>
+    <div class="page__filet"></div>
+
+    <article class="plat">
+      <h3 class="plat__nom" data-t="d1n">Fromages corses</h3>
+      <p class="plat__desc" data-t="d1d">Confiture de figues et pain aux noix</p>
+      <p class="plat__suggestion" data-t="d1s">Suggestion d'accompagnement : un verre de Muscat du Cap Corse</p>
+      <span class="plat__prix">18 €</span>
+    </article>
+    <div class="fleuron" aria-hidden="true"><span></span><i></i><span></span></div>
+
+    <article class="plat">
+      <h3 class="plat__nom" data-t="d2n">Tiramisu à la châtaigne</h3>
+      <span class="plat__prix">14 €</span>
+    </article>
+    <div class="fleuron" aria-hidden="true"><span></span><i></i><span></span></div>
+
+    <article class="plat">
+      <h3 class="plat__nom" data-t="d3n">Pain des morts façon pain perdu</h3>
+      <p class="plat__desc" data-t="d3d">Glace châtaigne et sauce caramel</p>
+      <span class="plat__prix">14 €</span>
+    </article>
+    <div class="fleuron" aria-hidden="true"><span></span><i></i><span></span></div>
+
+    <article class="plat">
+      <h3 class="plat__nom" data-t="d4n">Clémentines confites</h3>
+      <p class="plat__desc" data-t="d4d">Chocolat et noisettes concassées sur crème de chocolat</p>
+      <span class="plat__prix">14 €</span>
+    </article>
+    <div class="fleuron" aria-hidden="true"><span></span><i></i><span></span></div>
+
+    <article class="plat">
+      <h3 class="plat__nom" data-t="d5n">Fondant au chocolat</h3>
+      <p class="plat__desc" data-t="d5d">Fraîcheur à la vanille</p>
+      <span class="plat__prix">14 €</span>
+    </article>
+    <div class="fleuron" aria-hidden="true"><span></span><i></i><span></span></div>
+
+    <article class="plat">
+      <h3 class="plat__nom" data-t="d6n">Café gourmand À la Châtaigne</h3>
+      <p class="plat__desc" data-t="d6d">Canistrelli, moelleux à la châtaigne, glace châtaigne et café</p>
+      <span class="plat__prix">15 €</span>
+    </article>
+    <div class="fleuron" aria-hidden="true"><span></span><i></i><span></span></div>
+
+    <article class="plat">
+      <h3 class="plat__nom" data-t="d7n">Baba au rhum corse</h3>
+      <span class="plat__prix">12 €</span>
+    </article>
+    <div class="fleuron" aria-hidden="true"><span></span><i></i><span></span></div>
+
+    <article class="plat">
+      <h3 class="plat__nom" data-t="d8n">Coupe Corsica</h3>
+      <p class="plat__desc" data-t="d8d">Crème de marron, crème glacée à la châtaigne, chantilly</p>
+      <span class="plat__prix">12 €</span>
+    </article>
+    <div class="fleuron" aria-hidden="true"><span></span><i></i><span></span></div>
+
+    <article class="plat">
+      <h3 class="plat__nom" data-t="d9n">Trou corse</h3>
+      <p class="plat__desc" data-t="d9d">Sorbet mandarine et alcool de myrte</p>
+      <span class="plat__prix">12 €</span>
+    </article>
+  </section>
+
+</main>
+
+<footer class="pied">
+  <p class="pied__nom">La Châtaigne</p>
+  <p class="pied__note" data-t="piedNote">Cuisine corse</p>
+
+  <a class="cta" href="https://www.google.com/search?sca_esv=56a485f72e93c034&rlz=1C1CHBF_enFR1111FR1111&sxsrf=APpeQnuWRZ6jQwidIzlPb4nzWjoHNLEQQw:1785440249546&q=alachataigne&si=APenkKn5T4YN59srr511wD6k6Pufj9DEzRUvB1XJSwUeeT5afoqmhPWZUbMJFxDf8m3jOaCmfrRg1KdMeSWpKm7ouQwPWoE_ipHL4wiWxYYoO5a07Unn6Fo%3D&uds=AJ5uw1_7EAqmJ7zsMe1k38DnpC_vjB5OrRH9AaRKEdyKwof4k9A5qQwVH6NNz2NN98R3XLZQSgJwQ5m-5tgKA_MXJ3hsXytq5fQb3XtlSSn8N0O63VCc2Ro&sa=X&ved=2ahUKEwjIv92ek_uVAxXzOfsDHTXzAuEQ3PALegQIGhAE" target="_blank" rel="noopener">
+    <span data-t="cta">Nous trouver sur Google</span>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+  </a>
+
+  <!-- Remplacez ces deux lignes par vos vraies coordonnées -->
+  <p class="pied__infos">
+    Adresse à compléter<br>
+    Téléphone · Horaires à compléter
+  </p>
+</footer>
+
+<script>
+(function(){
+
+  var T = {
+    fr:{
+      titre:"La Châtaigne — Carte",
+      navA:"À partager", navE:"Entrées", navP:"Plats", navD:"Desserts",
+      enseigneNote:"Restaurant corse",
+      titreA:"À partager", titreE:"Entrées", titreP:"Plats", titreD:"Desserts",
+      sousA:"Les racines et les inspirations du moment",
+      sousE:"Les racines et les inspirations du moment",
+      sousP:"Les incontournables de la maison",
+      sousD:"La douceur corse pour terminer",
+      rubPlanches:"Les Planches", rubIncont:"Nos Incontournables",
+      piedNote:"Cuisine corse", cta:"Nous trouver sur Google",
+      ariaLangue:"Choisir la langue",
+      a1n:"Planche de charcuterie corse",
+      a1d:"Jambon, coppa, lonzo et saucisson",
+      a2n:"Planche mixte « U Spuntinu »",
+      a2d:"Assortiment de charcuterie et fromages corses",
+      e1n:"Planche de charcuterie corse",
+      e1d:"Jambon, coppa, lonzo et saucisson",
+      e2n:"Cappuccino de châtaigne",
+      e2d:"Espuma de crème et pointe de persil",
+      e3n:"Terrine de sanglier",
+      e3d:"Pesto aux herbes du maquis et confiture de myrte",
+      e4n:"Foie gras mi-cuit à la châtaigne fait maison",
+      e4d:"Confiture de figues et pain des maures aux fruits secs",
+      e5n:"Omelette au bruccio et à la menthe",
+      e6n:"Sardines en aïoli",
+      e6d:"Tartine de pain grillé",
+      p1n:"Aubergines à la Bonifacienne",
+      p1d:"Fondantes, gratinées et parfumées aux herbes",
+      p2n:"Cannelloni du berger",
+      p2d:"Farcis à la brousse et à la menthe fraîche",
+      p3n:"Stufatu de sanglier",
+      p3d:"Polenta moelleuse et pancetta grillée",
+      p4n:"Côte de veau au miel",
+      p4d:"Une recette emblématique, servie avec sa polenta moelleuse",
+      p5n:"Tagliatelles aux champignons",
+      p5d:"Crème de tomme corse et chips de coppa",
+      p6n:"Filet de bar rôti",
+      p6d:"Douceur de carotte à la châtaigne",
+      d1n:"Fromages corses",
+      d1d:"Confiture de figues et pain aux noix",
+      d1s:"Suggestion d'accompagnement : un verre de Muscat du Cap Corse",
+      d2n:"Tiramisu à la châtaigne",
+      d3n:"Pain des morts façon pain perdu",
+      d3d:"Glace châtaigne et sauce caramel",
+      d4n:"Clémentines confites",
+      d4d:"Chocolat et noisettes concassées sur crème de chocolat",
+      d5n:"Fondant au chocolat",
+      d5d:"Fraîcheur à la vanille",
+      d6n:"Café gourmand À la Châtaigne",
+      d6d:"Canistrelli, moelleux à la châtaigne, glace châtaigne et café",
+      d7n:"Baba au rhum corse",
+      d8n:"Coupe Corsica",
+      d8d:"Crème de marron, crème glacée à la châtaigne, chantilly",
+      d9n:"Trou corse",
+      d9d:"Sorbet mandarine et alcool de myrte"
+    },
+
+    en:{
+      titre:"La Châtaigne — Menu",
+      navA:"To share", navE:"Starters", navP:"Mains", navD:"Desserts",
+      enseigneNote:"Corsican restaurant",
+      titreA:"To share", titreE:"Starters", titreP:"Main courses", titreD:"Desserts",
+      sousA:"Our roots and seasonal inspirations",
+      sousE:"Our roots and seasonal inspirations",
+      sousP:"The house classics",
+      sousD:"A sweet Corsican finish",
+      rubPlanches:"Boards", rubIncont:"Our signature dishes",
+      piedNote:"Corsican cuisine", cta:"Find us on Google",
+      ariaLangue:"Choose a language",
+      a1n:"Corsican charcuterie board",
+      a1d:"Ham, coppa, lonzo and saucisson",
+      a2n:"“U Spuntinu” mixed board",
+      a2d:"Selection of Corsican charcuterie and cheeses",
+      e1n:"Corsican charcuterie board",
+      e1d:"Ham, coppa, lonzo and saucisson",
+      e2n:"Chestnut cappuccino",
+      e2d:"Cream espuma and a hint of parsley",
+      e3n:"Wild boar terrine",
+      e3d:"Maquis herb pesto and myrtle jam",
+      e4n:"Homemade semi-cooked foie gras with chestnut",
+      e4d:"Fig jam and dried-fruit bread (pain des maures)",
+      e5n:"Brocciu cheese and mint omelette",
+      e6n:"Sardines with aïoli",
+      e6d:"On toasted bread",
+      p1n:"Aubergines, Bonifacio style",
+      p1d:"Melt-in-the-mouth, gratinated and fragrant with herbs",
+      p2n:"Shepherd's cannelloni",
+      p2d:"Filled with brousse cheese and fresh mint",
+      p3n:"Wild boar stufatu",
+      p3d:"Soft polenta and grilled pancetta",
+      p4n:"Honey veal chop",
+      p4d:"A signature recipe, served with soft polenta",
+      p5n:"Mushroom tagliatelle",
+      p5d:"Corsican tomme cream and coppa crisps",
+      p6n:"Roasted sea bass fillet",
+      p6d:"Smooth carrot and chestnut purée",
+      d1n:"Corsican cheeses",
+      d1d:"Fig jam and walnut bread",
+      d1s:"Suggested pairing: a glass of Muscat du Cap Corse",
+      d2n:"Chestnut tiramisu",
+      d3n:"Pain des morts French toast",
+      d3d:"Chestnut ice cream and caramel sauce",
+      d4n:"Candied clementines",
+      d4d:"Chocolate and crushed hazelnuts on chocolate cream",
+      d5n:"Chocolate fondant",
+      d5d:"With a fresh touch of vanilla",
+      d6n:"Café gourmand À la Châtaigne",
+      d6d:"Canistrelli, chestnut moelleux, chestnut ice cream and coffee",
+      d7n:"Corsican rum baba",
+      d8n:"Coupe Corsica",
+      d8d:"Sweet chestnut cream, chestnut ice cream, Chantilly cream",
+      d9n:"Trou corse",
+      d9d:"Mandarin sorbet and myrtle liqueur"
+    },
+
+    it:{
+      titre:"La Châtaigne — Menu",
+      navA:"Da condividere", navE:"Antipasti", navP:"Secondi", navD:"Dolci",
+      enseigneNote:"Ristorante corso",
+      titreA:"Da condividere", titreE:"Antipasti", titreP:"Secondi", titreD:"Dolci",
+      sousA:"Le radici e le ispirazioni del momento",
+      sousE:"Le radici e le ispirazioni del momento",
+      sousP:"I classici della casa",
+      sousD:"La dolcezza corsa per finire",
+      rubPlanches:"I taglieri", rubIncont:"I nostri imperdibili",
+      piedNote:"Cucina corsa", cta:"Trovaci su Google",
+      ariaLangue:"Scegli la lingua",
+      a1n:"Tagliere di salumi corsi",
+      a1d:"Prosciutto, coppa, lonzo e salame",
+      a2n:"Tagliere misto « U Spuntinu »",
+      a2d:"Assortimento di salumi e formaggi corsi",
+      e1n:"Tagliere di salumi corsi",
+      e1d:"Prosciutto, coppa, lonzo e salame",
+      e2n:"Cappuccino di castagna",
+      e2d:"Spuma di panna e punta di prezzemolo",
+      e3n:"Terrina di cinghiale",
+      e3d:"Pesto alle erbe della macchia e confettura di mirto",
+      e4n:"Foie gras semicotto alla castagna fatto in casa",
+      e4d:"Confettura di fichi e pane alla frutta secca (pain des maures)",
+      e5n:"Frittata al brocciu e menta",
+      e6n:"Sardine all'aïoli",
+      e6d:"Crostone di pane tostato",
+      p1n:"Melanzane alla bonifacina",
+      p1d:"Morbide, gratinate e profumate alle erbe",
+      p2n:"Cannelloni del pastore",
+      p2d:"Ripieni di brousse e menta fresca",
+      p3n:"Stufatu di cinghiale",
+      p3d:"Polenta morbida e pancetta grigliata",
+      p4n:"Costoletta di vitello al miele",
+      p4d:"Una ricetta simbolo, servita con polenta morbida",
+      p5n:"Tagliatelle ai funghi",
+      p5d:"Crema di tomme corsa e chips di coppa",
+      p6n:"Filetto di branzino arrosto",
+      p6d:"Dolcezza di carota alla castagna",
+      d1n:"Formaggi corsi",
+      d1d:"Confettura di fichi e pane alle noci",
+      d1s:"Abbinamento consigliato: un bicchiere di Muscat du Cap Corse",
+      d2n:"Tiramisù alla castagna",
+      d3n:"Pane dei morti in stile pain perdu",
+      d3d:"Gelato alla castagna e salsa al caramello",
+      d4n:"Clementine candite",
+      d4d:"Cioccolato e nocciole tritate su crema al cioccolato",
+      d5n:"Tortino al cioccolato",
+      d5d:"Freschezza alla vaniglia",
+      d6n:"Café gourmand À la Châtaigne",
+      d6d:"Canistrelli, morbido alla castagna, gelato alla castagna e caffè",
+      d7n:"Babà al rum corso",
+      d8n:"Coppa Corsica",
+      d8d:"Crema di marroni, gelato alla castagna, panna montata",
+      d9n:"Trou corse",
+      d9d:"Sorbetto al mandarino e liquore di mirto"
+    },
+
+    de:{
+      titre:"La Châtaigne — Speisekarte",
+      navA:"Zum Teilen", navE:"Vorspeisen", navP:"Hauptgerichte", navD:"Desserts",
+      enseigneNote:"Korsisches Restaurant",
+      titreA:"Zum Teilen", titreE:"Vorspeisen", titreP:"Hauptgerichte", titreD:"Desserts",
+      sousA:"Unsere Wurzeln und Inspirationen der Saison",
+      sousE:"Unsere Wurzeln und Inspirationen der Saison",
+      sousP:"Die Klassiker des Hauses",
+      sousD:"Korsische Süße zum Abschluss",
+      rubPlanches:"Platten", rubIncont:"Unsere Spezialitäten",
+      piedNote:"Korsische Küche", cta:"Finden Sie uns auf Google",
+      ariaLangue:"Sprache wählen",
+      a1n:"Korsische Wurstplatte",
+      a1d:"Schinken, Coppa, Lonzo und Salami",
+      a2n:"Gemischte Platte „U Spuntinu“",
+      a2d:"Auswahl an korsischer Wurst und korsischem Käse",
+      e1n:"Korsische Wurstplatte",
+      e1d:"Schinken, Coppa, Lonzo und Salami",
+      e2n:"Kastanien-Cappuccino",
+      e2d:"Sahne-Espuma und ein Hauch Petersilie",
+      e3n:"Wildschweinterrine",
+      e3d:"Pesto aus Macchia-Kräutern und Myrtenkonfitüre",
+      e4n:"Hausgemachte halbgegarte Foie gras mit Kastanie",
+      e4d:"Feigenkonfitüre und Früchtebrot (pain des maures)",
+      e5n:"Omelett mit Brocciu und Minze",
+      e6n:"Sardinen mit Aïoli",
+      e6d:"Auf geröstetem Brot",
+      p1n:"Auberginen nach Bonifacio-Art",
+      p1d:"Zart, überbacken und mit Kräutern aromatisiert",
+      p2n:"Cannelloni des Hirten",
+      p2d:"Gefüllt mit Brousse und frischer Minze",
+      p3n:"Stufatu vom Wildschwein",
+      p3d:"Weiche Polenta und gegrillte Pancetta",
+      p4n:"Kalbskotelett mit Honig",
+      p4d:"Ein Klassiker des Hauses, serviert mit weicher Polenta",
+      p5n:"Tagliatelle mit Pilzen",
+      p5d:"Creme von korsischem Tomme und Coppa-Chips",
+      p6n:"Gebratenes Wolfsbarschfilet",
+      p6d:"Sanftes Karotten-Kastanien-Püree",
+      d1n:"Korsischer Käse",
+      d1d:"Feigenkonfitüre und Walnussbrot",
+      d1s:"Unsere Empfehlung dazu: ein Glas Muscat du Cap Corse",
+      d2n:"Kastanien-Tiramisu",
+      d3n:"Pain des morts als Arme Ritter",
+      d3d:"Kastanieneis und Karamellsauce",
+      d4n:"Kandierte Clementinen",
+      d4d:"Schokolade und gehackte Haselnüsse auf Schokoladencreme",
+      d5n:"Schokoladen-Fondant",
+      d5d:"Mit frischer Vanille",
+      d6n:"Café gourmand À la Châtaigne",
+      d6d:"Canistrelli, Kastanien-Moelleux, Kastanieneis und Kaffee",
+      d7n:"Rum-Baba nach korsischer Art",
+      d8n:"Coupe Corsica",
+      d8d:"Maronencreme, Kastanieneis, Schlagsahne",
+      d9n:"Trou corse",
+      d9d:"Mandarinensorbet und Myrtenlikör"
+    },
+
+    es:{
+      titre:"La Châtaigne — Carta",
+      navA:"Para compartir", navE:"Entrantes", navP:"Platos", navD:"Postres",
+      enseigneNote:"Restaurante corso",
+      titreA:"Para compartir", titreE:"Entrantes", titreP:"Platos principales", titreD:"Postres",
+      sousA:"Nuestras raíces e inspiraciones del momento",
+      sousE:"Nuestras raíces e inspiraciones del momento",
+      sousP:"Los imprescindibles de la casa",
+      sousD:"El toque dulce corso para terminar",
+      rubPlanches:"Las tablas", rubIncont:"Nuestros imprescindibles",
+      piedNote:"Cocina corsa", cta:"Encuéntranos en Google",
+      ariaLangue:"Elegir idioma",
+      a1n:"Tabla de embutidos corsos",
+      a1d:"Jamón, coppa, lonzo y salchichón",
+      a2n:"Tabla mixta «U Spuntinu»",
+      a2d:"Surtido de embutidos y quesos corsos",
+      e1n:"Tabla de embutidos corsos",
+      e1d:"Jamón, coppa, lonzo y salchichón",
+      e2n:"Capuchino de castaña",
+      e2d:"Espuma de nata y toque de perejil",
+      e3n:"Terrina de jabalí",
+      e3d:"Pesto de hierbas del maquis y mermelada de mirto",
+      e4n:"Foie gras semicocido a la castaña, casero",
+      e4d:"Mermelada de higos y pan de frutos secos (pain des maures)",
+      e5n:"Tortilla francesa de brocciu y menta",
+      e6n:"Sardinas con alioli",
+      e6d:"Sobre pan tostado",
+      p1n:"Berenjenas a la bonifacina",
+      p1d:"Tiernas, gratinadas y aromatizadas con hierbas",
+      p2n:"Canelones del pastor",
+      p2d:"Rellenos de brousse y menta fresca",
+      p3n:"Stufatu de jabalí",
+      p3d:"Polenta cremosa y panceta a la parrilla",
+      p4n:"Chuleta de ternera a la miel",
+      p4d:"Una receta emblemática, servida con polenta cremosa",
+      p5n:"Tallarines con setas",
+      p5d:"Crema de tomme corso y chips de coppa",
+      p6n:"Filete de lubina asado",
+      p6d:"Suave puré de zanahoria con castaña",
+      d1n:"Quesos corsos",
+      d1d:"Mermelada de higos y pan de nueces",
+      d1s:"Sugerencia: una copa de Muscat du Cap Corse",
+      d2n:"Tiramisú de castaña",
+      d3n:"Torrija de pain des morts",
+      d3d:"Helado de castaña y salsa de caramelo",
+      d4n:"Clementinas confitadas",
+      d4d:"Chocolate y avellanas troceadas sobre crema de chocolate",
+      d5n:"Fondant de chocolate",
+      d5d:"Frescor de vainilla",
+      d6n:"Café gourmand À la Châtaigne",
+      d6d:"Canistrelli, bizcocho de castaña, helado de castaña y café",
+      d7n:"Babá al ron corso",
+      d8n:"Copa Corsica",
+      d8d:"Crema de castañas, helado de castaña, nata montada",
+      d9n:"Trou corse",
+      d9d:"Sorbete de mandarina y licor de mirto"
+    },
+
+    co:{
+      titre:"A Castagna — Carta",
+      navA:"Da sparte", navE:"Antipasti", navP:"Piatti", navD:"Dolci",
+      enseigneNote:"Ristorante corsu",
+      titreA:"Da sparte", titreE:"Antipasti", titreP:"Piatti", titreD:"Dolci",
+      sousA:"E radiche è l'ispirazioni di u mumentu",
+      sousE:"E radiche è l'ispirazioni di u mumentu",
+      sousP:"L'imperdibili di a casa",
+      sousD:"A dulcezza corsa per finisce",
+      rubPlanches:"I taglieri", rubIncont:"I nostri imperdibili",
+      piedNote:"Cucina corsa", cta:"Truvà ci nant'à Google",
+      ariaLangue:"Sceglie a lingua",
+      a1n:"Tagliere di salumi corsi",
+      a1d:"Prisuttu, coppa, lonzu è salsiccia",
+      a2n:"Tagliere mistu « U Spuntinu »",
+      a2d:"Assurtimentu di salumi è di casgi corsi",
+      e1n:"Tagliere di salumi corsi",
+      e1d:"Prisuttu, coppa, lonzu è salsiccia",
+      e2n:"Cappuccinu di castagna",
+      e2d:"Spuma di crema è puntu di petrusellu",
+      e3n:"Terrina di cignale",
+      e3d:"Pesto à l'erbe di a machja è cunfittura di mortula",
+      e4n:"Foie gras mezu cottu à a castagna fattu in casa",
+      e4d:"Cunfittura di fichi è pane à i frutti secchi (pain des maures)",
+      e5n:"Frittata à u brocciu è à a menta",
+      e6n:"Sardine à l'aïoli",
+      e6d:"Fetta di pane arrustitu",
+      p1n:"Mérizane à a bunifazinca",
+      p1d:"Tenere, gratinate è prufumate à l'erbe",
+      p2n:"Cannelloni di u pastore",
+      p2d:"Pieni di brousse è di menta fresca",
+      p3n:"Stufatu di cignale",
+      p3d:"Pulenta molle è panzetta grigliata",
+      p4n:"Costula di vitellu à u mele",
+      p4d:"Una ricetta emblematica, servita cù a so pulenta molle",
+      p5n:"Tagliatelle à i funghi",
+      p5d:"Crema di tomma corsa è chips di coppa",
+      p6n:"Filettu di ragnola arrustitu",
+      p6d:"Dulcezza di carota à a castagna",
+      d1n:"Casgi corsi",
+      d1d:"Cunfittura di fichi è pane à e noce",
+      d1s:"Cunsigliu: un bichjeru di Muscat du Cap Corse",
+      d2n:"Tiramisù à a castagna",
+      d3n:"Pane di i morti cum'è pane persu",
+      d3d:"Gelu à a castagna è salsa caramella",
+      d4n:"Clementine cunfitte",
+      d4d:"Cicculata è nuciole schiacciate nant'à crema di cicculata",
+      d5n:"Fundente à a cicculata",
+      d5d:"Freschezza à a vaniglia",
+      d6n:"Caffè gourmand À la Châtaigne",
+      d6d:"Canistrelli, mollu à a castagna, gelu à a castagna è caffè",
+      d7n:"Babà à u rum corsu",
+      d8n:"Coppa Corsica",
+      d8d:"Crema di castagna, gelu à a castagna, chantilly",
+      d9n:"Trou corse",
+      d9d:"Sorbettu à u mandarinu è licore di mortula"
+    },
+
+    zh:{
+      titre:"La Châtaigne — 菜单",
+      navA:"分享", navE:"前菜", navP:"主菜", navD:"甜点",
+      enseigneNote:"科西嘉餐厅",
+      titreA:"分享拼盘", titreE:"前菜", titreP:"主菜", titreD:"甜点",
+      sousA:"传统根源与当季灵感",
+      sousE:"传统根源与当季灵感",
+      sousP:"本店招牌菜",
+      sousD:"以科西嘉甜点收尾",
+      rubPlanches:"拼盘", rubIncont:"招牌推荐",
+      piedNote:"科西嘉美食", cta:"在 Google 上找到我们",
+      ariaLangue:"选择语言",
+      a1n:"科西嘉冷切肉拼盘",
+      a1d:"科西嘉火腿、科帕、隆佐和萨拉米香肠",
+      a2n:"“U Spuntinu”综合拼盘",
+      a2d:"科西嘉冷切肉与奶酪拼盘",
+      e1n:"科西嘉冷切肉拼盘",
+      e1d:"科西嘉火腿、科帕、隆佐和萨拉米香肠",
+      e2n:"栗子卡布奇诺",
+      e2d:"奶油泡沫，点缀欧芹",
+      e3n:"野猪肉法式肉冻",
+      e3d:"马基灌木香草青酱，香桃木果酱",
+      e4n:"自制栗子半熟鹅肝",
+      e4d:"无花果酱，果干面包（pain des maures）",
+      e5n:"布洛丘奶酪薄荷煎蛋卷",
+      e6n:"蒜香蛋黄酱沙丁鱼",
+      e6d:"配烤面包片",
+      p1n:"博尼法乔式焗茄子",
+      p1d:"软糯焗烤，香草飘香",
+      p2n:"牧羊人意式面卷",
+      p2d:"布鲁斯软奶酪与新鲜薄荷馅",
+      p3n:"科西嘉红酒炖野猪肉",
+      p3d:"绵软玉米糊，烤意式培根",
+      p4n:"蜂蜜小牛排",
+      p4d:"本店经典菜式，配绵软玉米糊",
+      p5n:"蘑菇宽面",
+      p5d:"科西嘉托姆奶酪奶油酱，科帕火腿脆片",
+      p6n:"烤狼鲈鱼柳",
+      p6d:"栗子胡萝卜泥",
+      d1n:"科西嘉奶酪",
+      d1d:"无花果酱，核桃面包",
+      d1s:"推荐搭配：一杯科西嘉角麝香甜白葡萄酒（Muscat du Cap Corse）",
+      d2n:"栗子提拉米苏",
+      d3n:"科西嘉果干面包法式吐司",
+      d3d:"栗子冰淇淋，焦糖酱",
+      d4n:"糖渍小柑橘",
+      d4d:"巧克力奶油，配巧克力和碎榛子",
+      d5n:"巧克力熔岩蛋糕",
+      d5d:"清新香草",
+      d6n:"La Châtaigne 咖啡甜点拼盘",
+      d6d:"科西嘉卡尼斯特雷利饼干、栗子软蛋糕、栗子冰淇淋和咖啡",
+      d7n:"科西嘉朗姆酒巴巴蛋糕",
+      d8n:"科西嘉圣代（Coupe Corsica）",
+      d8d:"栗子酱、栗子冰淇淋、香缇鲜奶油",
+      d9n:"科西嘉冰沙（Trou corse）",
+      d9d:"橘子雪葩，香桃木利口酒"
+    }
+  };
+
+  var bouton  = document.getElementById('langueBouton');
+  var menu    = document.getElementById('langueMenu');
+  var codeEl  = document.getElementById('langueCode');
+  var choix   = Array.prototype.slice.call(menu.querySelectorAll('button[data-lang]'));
+
+  function applique(code){
+    var d = T[code] || T.fr;
+    document.querySelectorAll('[data-t]').forEach(function(el){
+      var cle = el.getAttribute('data-t');
+      if(d[cle] !== undefined) el.textContent = d[cle];
+    });
+    document.documentElement.lang = code === 'zh' ? 'zh-Hans' : code;
+    document.title = d.titre;
+    codeEl.textContent = code.toUpperCase();
+    bouton.setAttribute('aria-label', d.ariaLangue);
+    choix.forEach(function(b){
+      b.setAttribute('aria-current', b.dataset.lang === code ? 'true' : 'false');
+    });
+  }
+
+  function ferme(){
+    menu.classList.remove('est-ouvert');
+    bouton.setAttribute('aria-expanded','false');
+  }
+
+  bouton.addEventListener('click', function(e){
+    e.stopPropagation();
+    var ouvert = menu.classList.toggle('est-ouvert');
+    bouton.setAttribute('aria-expanded', ouvert ? 'true' : 'false');
+  });
+
+  choix.forEach(function(b){
+    b.addEventListener('click', function(){
+      applique(b.dataset.lang);
+      ferme();
+      bouton.focus();
+    });
+  });
+
+  document.addEventListener('click', function(e){
+    if(!menu.contains(e.target) && e.target !== bouton) ferme();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ ferme(); }
+  });
+
+  /* Langue proposée d'après le navigateur (zh-CN, zh-TW… → chinois), le français restant la référence */
+  var auto = (navigator.language || 'fr').slice(0,2).toLowerCase();
+  if(T[auto] && auto !== 'fr') applique(auto);
+
+  /* Lien actif dans la barre */
+  var liens = Array.prototype.slice.call(document.querySelectorAll('.barre__liens a'));
+  var pages = liens.map(function(l){ return document.querySelector(l.getAttribute('href')); });
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entrees){
+      entrees.forEach(function(en){
+        if(!en.isIntersecting) return;
+        liens.forEach(function(l,i){ l.classList.toggle('est-actif', pages[i] === en.target); });
+      });
+    },{ rootMargin:'-25% 0px -65% 0px' });
+    pages.forEach(function(p){ if(p) obs.observe(p); });
+  }
+
+})();
+</script>
+
+</body>
+</html>
